@@ -85,7 +85,7 @@ define("vs/basic-languages/html/html", ["require", "exports"], function(e, t) {
                 [/<!DOCTYPE/, "metatag", "@doctype"],
                 [/<!--/, "comment", "@comment"],
                 [/{{txt/, { token: 'hs-text', next: '@hsText'}],
-                [/"{{image/, { token: 'hs-image', next: '@hsImage'}],
+                [/{{image/, { token: 'hs-image', next: '@hsImage'}],
                 [/(<)((?:[\w\-]+:)?[\w\-]+)(\s*)(\/>)/, ["delimiter", "tag", "", "delimiter"]],
                 [/(<)(script)/, ["delimiter", {
                     token: "tag",
@@ -121,7 +121,7 @@ define("vs/basic-languages/html/html", ["require", "exports"], function(e, t) {
             ],
             hsImage: [
                 [/\(/, 'hs-image.inside.txt', '@hsAfterImage'],
-                [/}}"/, 'hs-image', '@pop'],
+                [/}}/, 'hs-image', '@pop'],
                 [/[.*?]+/, 'hs-image.inside'],
                 [/./, 'hs-image.inside'],
             ],
