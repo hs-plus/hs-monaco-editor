@@ -82,14 +82,18 @@ define("vs/basic-languages/html/html", ["require", "exports"], function(e, t) {
         tokenizer: {
           
             root: [
+                [/ {{image/, { token: 'hs-image', next: '@hsImage'}],
                 [/<!DOCTYPE/, "metatag", "@doctype"],
                 [/<!--/, "comment", "@comment"],
-                [/{{txt/, { token: 'hs-text', next: '@hsText'}],
-                [/{{image/, { token: 'hs-image', next: '@hsImage'}],
+                [/\s*{{txt/, { token: 'hs-text', next: '@hsText'}],
+                [/\s*{{image/, { token: 'hs-image', next: '@hsImage'}],
+
+                [/\s*\[/,{token: 'hs-shared', next: '@hsShared'}],
+                
                 [/(<)((?:[\w\-]+:)?[\w\-]+)(\s*)(\/>)/, ["delimiter", "tag", "", "delimiter"]],
                 [/(<)(script)/, ["delimiter", {
                     token: "tag",
-                    next: "@script"
+                    next: "@script" 
                 }]],
                 [/(<)(style)/, ["delimiter", {
                     token: "tag",
@@ -104,9 +108,13 @@ define("vs/basic-languages/html/html", ["require", "exports"], function(e, t) {
                     next: "@otherTag"
                 }]],
                 [/</, "delimiter"],
-                [/[^<]+/],
-               
-                
+                [/[^<]+/]
+
+            ],
+            hsShared: [
+                [/\]/, 'hs-shared', '@pop'],
+                [/[.*?]+/, 'hs-shared.inside'],
+                [/./, 'hs-shared.inside']
             ],
             hsText: [
                 [/\(/, 'hs-text.inside.txt', '@hsAfterText'],
@@ -141,6 +149,7 @@ define("vs/basic-languages/html/html", ["require", "exports"], function(e, t) {
             ],
             otherTag: [
                 [/\/?>/, "delimiter", "@pop"],
+                [/"({{image[.*?]}})"/, 'hs-image'],
                 [/"([^"]*)"/, "attribute.value"],
                 [/'([^']*)'/, "attribute.value"],
                 [/[\w\-]+/, "attribute.name"],
